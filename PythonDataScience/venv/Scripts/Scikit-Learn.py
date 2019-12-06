@@ -725,3 +725,66 @@ mat = confusion_matrix(ytest, ypred)
 sns.heatmap(mat.T, square=True, annot=True, fmt='d',cbar=False)
 plt.xlabel('true label')
 plt.ylabel('predicted label');
+
+# pca
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns; sns.set()
+
+rng = np.random.RandomState(1)
+X = np.dot(rng.rand(2, 2), rng.randn(2, 200)).T
+plt.scatter(X[:, 0], X[:, 1])
+plt.axis('equal');
+
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2)
+pca.fit(X)
+
+print(pca.components_)
+print(pca.explained_variance_)
+
+# dimentionality reduction
+pca = PCA(n_components=1)
+pca.fit(X)
+X_pca = pca.transform(X)
+
+# digits
+from sklearn.datasets import load_digits
+digits = load_digits()
+digits.data.shape
+
+pca = PCA(2)
+projected = pca.fit_transform(digits.data)
+plt.scatter(projected[:,0],projected[:,1],
+            c=digits.target, edgecolors='none',alpha=0.5,
+            cmap=plt.cm.get_cmap('Accent',10))
+plt.xlabel('component1')
+plt.ylabel('component2')
+plt.colorbar();
+
+# choose number of components
+pca =PCA().fit(digits.data)
+plt.plot(np.cumsum(pca.explained_variance_ratio_))
+plt.xlabel('number of components')
+plt.ylabel('cumulative explained variance');
+
+# kmeans
+import matplotlib.pyplot as plt
+import seaborn as sns; sns.set()  # for plot styling
+import numpy as np
+
+from sklearn.datasets.samples_generator import make_blobs
+X, y_true = make_blobs(n_samples=300, centers=4,
+                       cluster_std=0.60, random_state=0)
+plt.scatter(X[:, 0], X[:, 1], s=50);
+
+from sklearn.cluster import KMeans
+kmeans = KMeans(n_clusters=4)
+kmeans.fit(X)
+y_kmeans = kmeans.predict(X)
+
+plt.scatter(X[:, 0], X[:, 1], c=y_kmeans , s=50, cmap='viridis')
+
+centers = kmeans.cluster_centers_
+plt.scatter(centers[:, 0], centers[:, 1], c= 'black', s=200, alpha=0.5);
+
